@@ -27,6 +27,19 @@ function parseFrontmatter(content) {
 }
 
 function main() {
+  // Fallback: if skills dir doesn't exist (e.g. GitHub Actions), use existing cache
+  if (!fs.existsSync(SKILLS_DIR)) {
+    console.log(`⚠ Skills dir not found: ${SKILLS_DIR}`);
+    if (fs.existsSync(OUTPUT)) {
+      console.log("  Using existing skills-cache.json");
+      const cached = JSON.parse(fs.readFileSync(OUTPUT, "utf-8"));
+      generateOutputs(cached);
+      return;
+    }
+    console.error("  No cache found either. Run build-skills.js locally first.");
+    process.exit(1);
+  }
+
   const skills = [];
   const topEntries = fs.readdirSync(SKILLS_DIR, { withFileTypes: true });
   for (const entry of topEntries) {
