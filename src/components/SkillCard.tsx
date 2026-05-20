@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Skill } from "@/lib/skills";
+import type { Skill } from "@/lib/skills-data";
 
 const CATEGORY_COLORS: Record<string, string> = {
   "software-development": "from-blue-500/20 to-blue-600/10 border-blue-500/20",

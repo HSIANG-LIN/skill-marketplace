@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getSkillsByCategory, getAllCategories } from "@/lib/skills";
+import { getSkillsByCategory, getAllCategories } from "@/lib/skills-data";
 import SkillCard from "@/components/SkillCard";
 import Link from "next/link";
 

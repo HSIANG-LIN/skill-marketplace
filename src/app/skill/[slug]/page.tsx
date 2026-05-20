@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getSkillBySlug, getAllSkills } from "@/lib/skills";
+import { getSkillBySlug, getAllSkills } from "@/lib/skills-data";
 import SkillContent from "@/components/SkillContent";
 import InstallButton from "@/components/InstallButton";
 

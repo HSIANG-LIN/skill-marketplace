@@ -1,4 +1,4 @@
-import { getAllSkills, getAllCategories } from "@/lib/skills";
+import { getAllSkills, getAllCategories } from "@/lib/skills-data";
 import SkillCard from "@/components/SkillCard";
 import CategoryCard from "@/components/CategoryCard";
 import SearchBar from "@/components/SearchBar";

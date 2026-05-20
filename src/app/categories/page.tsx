@@ -1,4 +1,4 @@
-import { getAllCategories, getAllSkills } from "@/lib/skills";
+import { getAllCategories, getAllSkills } from "@/lib/skills-data";
 import CategoryCard from "@/components/CategoryCard";
 
 export default function CategoriesPage() {
