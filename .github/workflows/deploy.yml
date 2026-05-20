@@ -28,12 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build skills data
-        run: node scripts/build-skills.js
-        env:
-          HOME: /home/runner
-
-      - name: Build Next.js
+      - name: Build Next.js (skills data already in repo)
         run: npm run build
 
       - name: Upload artifact

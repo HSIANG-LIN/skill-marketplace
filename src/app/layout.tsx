@@ -26,6 +26,9 @@ export default function RootLayout({
               </span>
             </Link>
             <div className="flex items-center gap-6">
+              <Link href="/my-skills" className="text-sm text-gray-400 hover:text-white transition-colors">
+                My Skills
+              </Link>
               <Link href="/categories" className="text-sm text-gray-400 hover:text-white transition-colors">
                 Categories
               </Link>

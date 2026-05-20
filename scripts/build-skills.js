@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const SKILLS_DIR = path.join(process.env.HOME || "/home/simon_dou", ".hermes", "skills");
+const SKILLS_DIR = process.env.SKILLS_DIR || path.join(process.env.HOME || "/home/simon_dou", ".hermes", "skills");
 const OUTPUT = path.join(process.cwd(), "data", "skills-cache.json");
 const CLIENT_OUTPUT = path.join(process.cwd(), "src/lib/skills-data.ts");
 
