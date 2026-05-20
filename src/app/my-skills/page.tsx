@@ -1,5 +1,4 @@
 import { getAllSkills } from "@/lib/skills-data";
-import SkillCard from "@/components/SkillCard";
 import Link from "next/link";
 
 // Simon's most used skills, ranked by actual usage frequency
