@@ -26,53 +26,7 @@ function parseFrontmatter(content) {
   return fm;
 }
 
-function main() {
-  // Fallback: if skills dir doesn't exist (e.g. GitHub Actions), use existing cache
-  if (!fs.existsSync(SKILLS_DIR)) {
-    console.log(`⚠ Skills dir not found: ${SKILLS_DIR}`);
-    if (fs.existsSync(OUTPUT)) {
-      console.log("  Using existing skills-cache.json");
-      const cached = JSON.parse(fs.readFileSync(OUTPUT, "utf-8"));
-      generateOutputs(cached);
-      return;
-    }
-    console.error("  No cache found either. Run build-skills.js locally first.");
-    process.exit(1);
-  }
-
-  const skills = [];
-  const topEntries = fs.readdirSync(SKILLS_DIR, { withFileTypes: true });
-  for (const entry of topEntries) {
-    if (entry.name.startsWith(".") || !entry.isDirectory()) continue;
-    const catDir = path.join(SKILLS_DIR, entry.name);
-    let entries2;
-    try { entries2 = fs.readdirSync(catDir, { withFileTypes: true }); } catch(e) { continue; }
-    for (const e2 of entries2) {
-      if (e2.name.startsWith(".") || !e2.isDirectory()) continue;
-      const skillFile = path.join(catDir, e2.name, "SKILL.md");
-      if (!fs.existsSync(skillFile)) continue;
-      const stat = fs.statSync(skillFile);
-      if (stat.size === 0) continue;
-      const raw = fs.readFileSync(skillFile, "utf-8");
-      const fm = parseFrontmatter(raw);
-      const bodyMatch = raw.match(/^---\s*\n[\s\S]*?\n---\s*\n([\s\S]*)$/);
-      const body = bodyMatch ? bodyMatch[1].trim() : "";
-      skills.push({
-        name: fm["name"] || e2.name,
-        slug: e2.name,
-        category: entry.name,
-        description: fm["description"] || "",
-        version: fm["version"] || "1.0.0",
-        author: (Array.isArray(fm["author"]) ? fm["author"].join(", ") : fm["author"]) || "Hermes Community",
-        license: fm["license"] || "MIT",
-        platforms: Array.isArray(fm["platforms"]) ? fm["platforms"] : [],
-        tags: Array.isArray(fm["tags"]) ? fm["tags"] : [],
-        body,
-        relPath: path.relative(SKILLS_DIR, skillFile),
-      });
-    }
-  }
-
+function generateOutputs(skills) {
   // Write JSON cache
   fs.mkdirSync(path.dirname(OUTPUT), { recursive: true });
   fs.writeFileSync(OUTPUT, JSON.stringify(skills, null, 2), "utf-8");
@@ -122,7 +76,57 @@ export function searchSkills(query: string): Skill[] {
   fs.mkdirSync(path.dirname(CLIENT_OUTPUT), { recursive: true });
   fs.writeFileSync(CLIENT_OUTPUT, clientCode, "utf-8");
 
-  console.log(`✅ Scanned ${skills.length} skills`);
+  console.log(`✅ Processed ${skills.length} skills`);
+}
+
+function main() {
+  // Fallback: if skills dir doesn't exist (e.g. GitHub Actions), use existing cache
+  if (!fs.existsSync(SKILLS_DIR)) {
+    console.log(`⚠ Skills dir not found: ${SKILLS_DIR}`);
+    if (fs.existsSync(OUTPUT)) {
+      console.log("  Using existing skills-cache.json");
+      const cached = JSON.parse(fs.readFileSync(OUTPUT, "utf-8"));
+      generateOutputs(cached);
+      return;
+    }
+    console.error("  No cache found either. Run build-skills.js locally first.");
+    process.exit(1);
+  }
+
+  const skills = [];
+  const topEntries = fs.readdirSync(SKILLS_DIR, { withFileTypes: true });
+  for (const entry of topEntries) {
+    if (entry.name.startsWith(".") || !entry.isDirectory()) continue;
+    const catDir = path.join(SKILLS_DIR, entry.name);
+    let entries2;
+    try { entries2 = fs.readdirSync(catDir, { withFileTypes: true }); } catch(e) { continue; }
+    for (const e2 of entries2) {
+      if (e2.name.startsWith(".") || !e2.isDirectory()) continue;
+      const skillFile = path.join(catDir, e2.name, "SKILL.md");
+      if (!fs.existsSync(skillFile)) continue;
+      const stat = fs.statSync(skillFile);
+      if (stat.size === 0) continue;
+      const raw = fs.readFileSync(skillFile, "utf-8");
+      const fm = parseFrontmatter(raw);
+      const bodyMatch = raw.match(/^---\s*\n[\s\S]*?\n---\s*\n([\s\S]*)$/);
+      const body = bodyMatch ? bodyMatch[1].trim() : "";
+      skills.push({
+        name: fm["name"] || e2.name,
+        slug: e2.name,
+        category: entry.name,
+        description: fm["description"] || "",
+        version: fm["version"] || "1.0.0",
+        author: (Array.isArray(fm["author"]) ? fm["author"].join(", ") : fm["author"]) || "Hermes Community",
+        license: fm["license"] || "MIT",
+        platforms: Array.isArray(fm["platforms"]) ? fm["platforms"] : [],
+        tags: Array.isArray(fm["tags"]) ? fm["tags"] : [],
+        body,
+        relPath: path.relative(SKILLS_DIR, skillFile),
+      });
+    }
+  }
+
+  generateOutputs(skills);
 
   // Copy to public/skills
   const pubDir = path.join(process.cwd(), "public", "skills");
